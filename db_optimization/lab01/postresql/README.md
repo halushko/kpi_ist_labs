@@ -8,16 +8,18 @@
 7. Стоврити процедуру з update_managers.sql
 8. Виконати наступний запит 
 ```
-begin
+DO $$
+BEGIN
     CALL INSERT_VALUES_INTO_CITIES();
     CALL INSERT_VALUES_INTO_EMPLOYEES();
-end;
+END $$;
 ```
 8. Виконати запит
 ```
-begin
+DO $$
+BEGIN
     CALL UPDATE_MANAGERS(100000, 8);
-end;
+END $$;
 ```
 9. Виконати запит для представлення ієрархії
 ```
