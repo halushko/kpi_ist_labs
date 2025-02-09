@@ -2,20 +2,21 @@
 1. Підключитися до БД
 2. Виконати EMPLOYEES.sql
 3. Виконати CITIES.sql
-4. Виконати insert_values_into_cities.sql
-5. Виконати generate_random_phone_number.sql
-6. Виконати insert_values_into_cities.sql
-7. Виконати запит 
+4. Створити процедуру з insert_values_into_cities.sql
+5. Створити процедуру з generate_random_phone_number.sql
+6. Створити процедуру з insert_values_into_employees.sql
+7. Стоврити процедуру з update_managers.sql
+8. Виконати наступний запит 
 ```
 begin
-    INSERT_VALUES_INTO_CITIES();
-    INSERT_VALUES_INTO_EMPLOYEES();
+    CALL INSERT_VALUES_INTO_CITIES();
+    CALL INSERT_VALUES_INTO_EMPLOYEES();
 end;
 ```
 8. Виконати запит
 ```
 begin
-    UPDATE_MANAGERS(100000, 8);
+    CALL UPDATE_MANAGERS(100000, 8);
 end;
 ```
 9. Виконати запит для представлення ієрархії
