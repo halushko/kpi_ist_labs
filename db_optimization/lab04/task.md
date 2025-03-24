@@ -19,7 +19,8 @@ SET seq_page_cost = 10.0;
 # Частина 2. Прямі хінти з pg_hint_plan
 Якщо pg_hint_plan не встановлено — встановіть і активуйте розширення:
 ```postgresql
-CREATE EXTENSION pg_hint_plan;
+CREATE EXTENSION IF NOT EXISTS pg_hint_plan;
+--CREATE EXTENSION pg_hint_plan;
 ```
 
 ## 2.1. Хінт IndexScan
