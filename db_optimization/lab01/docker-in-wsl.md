@@ -1,5 +1,5 @@
 # In the windows terminal:
-## Run wsl
+## Run WSL
 1. wsl --set-default Ubuntu
 2. wsl
 3. sudo apt-get update
