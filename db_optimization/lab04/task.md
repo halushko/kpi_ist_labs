@@ -17,10 +17,22 @@ SET seq_page_cost = 10.0;
 ```
 
 # Частина 2. Прямі хінти з pg_hint_plan
-Якщо pg_hint_plan не встановлено — встановіть і активуйте розширення:
+Якщо pg_hint_plan не встановлено — встановіть і активуйте розширення. Можна використати Docker image з попередньо встановленим pg_hint_plan [exteded-postgres](https://hub.docker.com/r/postgresai/extended-postgres).
+
 ```postgresql
 CREATE EXTENSION IF NOT EXISTS pg_hint_plan;
 --CREATE EXTENSION pg_hint_plan;
+```
+
+Перед запуском запитів з хінтами, виконайте завантаження розширення і включіть відладку:
+```postgresql
+LOAD 'pg_hint_plan';
+
+SET pg_hint_plan.enable_hint TO on;
+
+SET pg_hint_plan.enable_hint_table TO ON;
+
+SET pg_hint_plan.debug_print = on;
 ```
 
 ## 2.1. Хінт IndexScan
