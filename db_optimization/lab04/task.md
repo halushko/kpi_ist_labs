@@ -45,6 +45,10 @@ CREATE INDEX idx_employees_salary ON employees(salary);
 /*+ IndexScan(employees idx_employees_salary) */
 SELECT * FROM employees WHERE salary > 10000;
 ```
+У деяких випадках хінт може не працювати, якщо він записаний окремо від запиту, оскільки SQL просто ігнорує його як звичайний коментар. Тому хінт треба записати безпосередньо всередині запиту, щоб він був правильно зчитаний оптимізатором PostgreSQL.
+```postgresql
+SELECT /*+ IndexScan(employees idx_employees_salary) */ * FROM employees WHERE salary > 10000;
+```
 ## 2.2. JOIN з хінтами
 Оцініть план для запиту:
 ```postgresql
