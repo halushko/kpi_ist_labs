@@ -9,6 +9,7 @@ SELECT * FROM employees WHERE salary > 10000;
 ```postgresql
 SET enable_seqscan = off;
 ```
+Але дана команда може не одразу вимкнути `Sequence scan`, тобто при виконанні плану запиту з пункту 1.1 все ще буде використовуватися `Sequence scan`, але при цьому дуже сильно зросте `Total cost`, тому для повного вимкнення `Sequence scan` іноді потрібно перезапустити БД (у `Docker` або через служби, якщо використовується локальна бд) і після перезапуску знову виконати дану команду.
 ## 1.3. Зміна параметрів cost
 Виконайте і після цього оцініть план запиту з пункту 1.1:
 ```postgresql
@@ -34,6 +35,9 @@ SET pg_hint_plan.enable_hint_table TO ON;
 
 SET pg_hint_plan.debug_print = on;
 ```
+`enable_hint`: вмикає/вимикає обробку хінтів у запитах,
+`enable_hint_table`: дозволяє задавати хінти через спеціальну таблицю,
+`debug_print` потрібен для того, щоб у вікні `Output` з'являлись повідомлення про обробку хінтів — якщо хінт написаний з помилками, або не застосований, це буде видно у повідомленні у вікні `Output`.
 
 ## 2.1. Хінт IndexScan
 Створіть індекс, якщо ще не створено. Або використайте інший індекс:
@@ -45,7 +49,12 @@ CREATE INDEX idx_employees_salary ON employees(salary);
 /*+ IndexScan(employees idx_employees_salary) */
 SELECT * FROM employees WHERE salary > 10000;
 ```
-У деяких випадках хінт може не працювати, якщо він записаний окремо від запиту, оскільки PostgreSQL може просто ігнорувати його як звичайний коментар. Тому хінт треба записати безпосередньо всередині запиту, щоб він був правильно зчитаний оптимізатором PostgreSQL. Це може залежати від середовища розробки (IDE), яке визначає, який синтаксис сприймається коректно.
+У деяких випадках хінт може не працювати, якщо він записаний окремо від запиту, оскільки PostgreSQL може просто ігнорувати його як звичайний коментар. Тому хінт треба записати безпосередньо всередині запиту, щоб він був правильно зчитаний оптимізатором PostgreSQL. Це може залежати від середовища розробки (IDE), яке визначає, який синтаксис сприймається коректно. Наприклад, даний хінт спрацювує у `DBeaver`, але не працює у `DataGrip`:
+```postgresql
+/*+ IndexScan(employees idx_employees_salary) */
+explain analyze SELECT FROM employees WHERE employees.salary > 10000;
+```
+При цьому, хінт записаний безспосередньо в запиті, виконується і в `DataGrip`:
 ```postgresql
 SELECT /*+ IndexScan(employees idx_employees_salary) */ * FROM employees WHERE salary > 10000;
 ```
@@ -65,10 +74,14 @@ SELECT ...
 /*+ NestLoop(e c) */
 SELECT ...
 ```
-
+Підказка: для коректної роботи `NestLoop` варто створити індекси на полях, які використовуються для з’єднання. Наприклад:
+```postgresql
+CREATE INDEX idx_employees_city_id ON employees(city_id);
+CREATE INDEX idx_cities_id ON cities(id);
+```
 ## Частина 3. Додатковий аналіз
 ##  3.1. Перевірка статистики
-Гляньте що всередині:
+Гляньте що всередині. Зверніть увагу на стовпчики `idx_scan` та `last_idx_scan`:
 ```postgresql
 SELECT * FROM pg_stat_user_indexes WHERE relname = 'employees';
 ```
